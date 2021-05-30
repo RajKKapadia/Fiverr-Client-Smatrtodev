@@ -56,8 +56,11 @@ const userProvidesDifficultyLevel = (req) => {
 
         let qa = QA.quizDictionary[difficulty_level];
         let numberOfQuestions = Object.keys(qa).length;
+        console.log(`Max length of questions --> ${numberOfQuestions}`);
         let randomQANumbers = []
         Array.from({ length: 5 }, () => randomQANumbers.push(Math.floor(Math.random() * numberOfQuestions)));
+        console.log('Random numbers for question');
+        console.log(randomQANumbers);
         let selectedQA = [];
         for (let index = 0; index < 5; index++) {
             selectedQA.push(qa[randomQANumbers[index] + 1]);
@@ -71,12 +74,14 @@ const userProvidesDifficultyLevel = (req) => {
         let awaitAnswer = `${session}/contexts/await-answer`;
         let sessionContext = `${session}/contexts/session`;
 
+        let randomQuestionNumber = Math.floor(Math.random() * selectedQA[counter].question.length);
+
         return {
-            fulfillmentText: `(${counter + 1}) ${selectedQA[counter].question[0]}.`,
+            fulfillmentText: `(${counter + 1}) ${selectedQA[counter].question[randomQuestionNumber]}.`,
             fulfillmentMessages: [
                 {
                     text: {
-                        text: [`(${counter + 1}) ${selectedQA[counter].question[0]}.`]
+                        text: [`(${counter + 1}) ${selectedQA[counter].question[randomQuestionNumber]}.`]
                     }
                 }
             ],
@@ -137,12 +142,14 @@ const userProvidesAnswer = (req) => {
         let awaitAnswer = `${session}/contexts/await-answer`;
         let sessionContext = `${session}/contexts/session`;
 
+        let randomQuestionNumber = Math.floor(Math.random() * selectedQA[counter].question.length);
+
         return {
-            fulfillmentText: `Great, that is a right answer. Here is your next question ${selectedQA[counter].question[0]}.`,
+            fulfillmentText: `Great, that is a right answer. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`,
             fulfillmentMessages: [
                 {
                     text: {
-                        text: [`Great, that is a right answer. Here is your next question ${selectedQA[counter].question[0]}.`]
+                        text: [`Great, that is a right answer. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`]
                     }
                 }
             ],
@@ -168,12 +175,14 @@ const userProvidesAnswer = (req) => {
         let awaitAnswer = `${session}/contexts/await-answer`;
         let sessionContext = `${session}/contexts/session`;
 
+        let randomQuestionNumber = Math.floor(Math.random() * selectedQA[counter].question.length);
+
         return {
-            fulfillmentText: `Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Here is your next question ${selectedQA[counter].question}.`,
+            fulfillmentText: `Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`,
             fulfillmentMessages: [
                 {
                     text: {
-                        text: [`Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Here is your next question ${selectedQA[counter].question}.`]
+                        text: [`Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`]
                     }
                 }
             ],
