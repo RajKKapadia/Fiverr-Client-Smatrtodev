@@ -118,18 +118,36 @@ const userProvidesAnswer = (req) => {
         }
     });
 
-    let correctAnswers = selectedQA[counter].answer;
+    let prefferedAnswer = selectedQA[counter].prefferedAnswer;
+    let alternateAnswers = selectedQA[counter].alternateAnswers;
+
+    // Replaced this with two step answer check
+    // let flag = false;
+    // correctAnswers.forEach(ca => {
+    //     if (String(ca) === userAnswer.trim()) {
+    //         flag = true;
+    //         score += 1;
+    //     }
+    // });
 
     let flag = false;
 
-    correctAnswers.forEach(ca => {
-        if (String(ca) === userAnswer.trim()) {
-            flag = true;
-            score += 1;
-        }
-    });
+    if (String(prefferedAnswer[0]) === userAnswer.trim()) {
+        flag = true;
+        score += 1;
+    } else {
+        alternateAnswers.forEach(as => {
+            console.log(`Alternate answer --> ${as}`);
+            if (String(as) === userAnswer.trim()) {
+                flag = true;
+                score += 1;
+            }
+        });
+    }
 
-    console.log(`Correct answer --> ${correctAnswers}`);
+    console.log(`Preffered answer --> ${prefferedAnswer}`);
+    console.log('Alternate answer --> ');
+    console.log(alternateAnswers);
     console.log(`User answer --> ${userAnswer}`);
     console.log(`Score --> ${score}`);
 
@@ -166,7 +184,7 @@ const userProvidesAnswer = (req) => {
                 }
             }]
         };
-    // Wrong answer
+        // Wrong answer
     } else if (!flag && counter != 4) {
         counter += 1;
 
@@ -178,11 +196,11 @@ const userProvidesAnswer = (req) => {
         let randomQuestionNumber = Math.floor(Math.random() * selectedQA[counter].question.length);
 
         return {
-            fulfillmentText: `Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`,
+            fulfillmentText: `Sorry ${userAnswer} is a wrong, the correct answer is ${prefferedAnswer[0]}. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`,
             fulfillmentMessages: [
                 {
                     text: {
-                        text: [`Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`]
+                        text: [`Sorry ${userAnswer} is a wrong, the correct answer is ${prefferedAnswer[0]}. Here is your next question ${selectedQA[counter].question[randomQuestionNumber]}.`]
                     }
                 }
             ],
@@ -199,7 +217,7 @@ const userProvidesAnswer = (req) => {
                 }
             }]
         };
-    // Show score and right answer
+        // Show score and right answer
     } else if (flag) {
         let session = req.body.session;
         let awaitAnswer = `${session}/contexts/await-answer`;
@@ -236,7 +254,7 @@ const userProvidesAnswer = (req) => {
                 lifespanCount: 1
             }]
         };
-    // Show score and wrong answer
+        // Show score and wrong answer
     } else {
         let session = req.body.session;
         let awaitAnswer = `${session}/contexts/await-answer`;
@@ -246,11 +264,11 @@ const userProvidesAnswer = (req) => {
         let outString = '';
 
         if (score == 5) {
-            outString += `Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. High five!. Your score is ${score} out of 5. To start the quiz again type please choose a level between 1 to 5.`
+            outString += `Sorry ${userAnswer} is a wrong, the correct answer is ${prefferedAnswer[0]}. High five!. Your score is ${score} out of 5. To start the quiz again type please choose a level between 1 to 5.`
         } else if (score == 4) {
-            outString += `Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. You did a great job. Your score is ${score} out of 5. To start the quiz again type please choose a level between 1 to 5.`
+            outString += `Sorry ${userAnswer} is a wrong, the correct answer is ${prefferedAnswer[0]}. You did a great job. Your score is ${score} out of 5. To start the quiz again type please choose a level between 1 to 5.`
         } else {
-            outString += `Sorry ${userAnswer} is a wrong, the correct answer is ${correctAnswers[0]}. Your score is ${score} out of 5. To start the quiz again type please choose a level between 1 to 5.`
+            outString += `Sorry ${userAnswer} is a wrong, the correct answer is ${prefferedAnswer[0]}. Your score is ${score} out of 5. To start the quiz again type please choose a level between 1 to 5.`
         }
 
         return {
